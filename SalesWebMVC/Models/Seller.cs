@@ -10,7 +10,7 @@ namespace SalesWebMVC.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public String Email { get; set; }
-        public DateTime BirthData { get; set; }
+        public DateTime BirthDate { get; set; }
         public double  BaseSalary { get; set; }
 
         public Department Department{ get; set; }
@@ -26,7 +26,7 @@ namespace SalesWebMVC.Models
             Id = id;
             Name = name;
             Email = email;
-            BirthData = birthData;
+            BirthDate = birthData;
             BaseSalary = baseSalary;
             Department = department;
         }
