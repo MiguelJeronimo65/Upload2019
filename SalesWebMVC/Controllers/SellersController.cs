@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Services;
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
+using System.Security.Permissions;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace SalesWebMVC.Controllers
 {
@@ -42,6 +44,32 @@ namespace SalesWebMVC.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction("Index");
             //return RedirectToAction(nameof(Index);
+
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            //return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
 
         }
     }
