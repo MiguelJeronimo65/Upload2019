@@ -10,6 +10,8 @@ using SalesWebMVC.Models.ViewModels;
 using System.Security.Permissions;
 using System.Runtime.InteropServices.WindowsRuntime;
 using SalesWebMVC.Services.Exceptions;
+using System.Diagnostics;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace SalesWebMVC.Controllers
 {
@@ -36,7 +38,7 @@ namespace SalesWebMVC.Controllers
             var departments = _departmentService.FindALL();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
-            
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,13 +54,15 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Found" });
             }
 
             return View(obj);
@@ -79,13 +83,15 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Found" });
             }
 
             return View(obj);
@@ -93,15 +99,17 @@ namespace SalesWebMVC.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (id==null)
+            if (id == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
-            if (obj==null)
+            if (obj == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = "Id Not Found" });
             }
 
             /*Lista todo os Departamentos*/
@@ -115,11 +123,12 @@ namespace SalesWebMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id,Seller seller)
+        public IActionResult Edit(int id, Seller seller)
         {
-            if (id!= seller.Id)
+            if (id != seller.Id)
             {
-                return BadRequest();
+                //return BadRequest();
+                return RedirectToAction(nameof(Error), new { Message = "Id mismatch" });
             }
 
             try
@@ -128,15 +137,28 @@ namespace SalesWebMVC.Controllers
                 //Redireccionar para o index
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (NotFoundException e)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Error), new { Message = e.Message });
             }
-            catch (DBConcurrencyException)
+            catch (DBConcurrencyException e )
             {
-                return BadRequest();
+                //return BadRequest();
+                return RedirectToAction(nameof(Error), new { Message = e.Message });
             }
+        }
 
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier   /*ID interno */
+
+            };
+
+            return View(viewModel);
 
         }
     }
