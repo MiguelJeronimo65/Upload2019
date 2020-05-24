@@ -9,6 +9,7 @@ using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using System.Security.Permissions;
 using System.Runtime.InteropServices.WindowsRuntime;
+using SalesWebMVC.Services.Exceptions;
 
 namespace SalesWebMVC.Controllers
 {
@@ -110,6 +111,33 @@ namespace SalesWebMVC.Controllers
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id,Seller seller)
+        {
+            if (id!= seller.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _sellerService.Update(seller);
+                //Redireccionar para o index
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DBConcurrencyException)
+            {
+                return BadRequest();
+            }
+
+
         }
     }
 }
