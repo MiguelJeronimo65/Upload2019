@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Models;
 using SalesWebMVC.Data;
 using SalesWebMVC.Services;
+using System.Globalization;
 
 namespace SalesWebMVC
 {
@@ -50,6 +52,17 @@ namespace SalesWebMVC
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
         //public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var enUS = new CultureInfo("en-US");
+            var localizationOption = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(enUS),
+                SupportedCultures = new List<CultureInfo> { enUS },
+                SupportedUICultures = new List<CultureInfo> { enUS }
+            };
+            app.UseRequestLocalization(localizationOption);
+
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
