@@ -9,16 +9,26 @@ namespace SalesWebMVC.Models
     public class Seller
     {
         public int Id { get; set; }
+        //[Required(ErrorMessage ="Name Required")]
+        [Required(ErrorMessage = "{0} Required")]
+        //[StringLength(60,MinimumLength =3,ErrorMessage ="Name size should be between 3 and 60")]
+        [StringLength(60, MinimumLength = 3, ErrorMessage = "{0} size should be between {2} and {1}")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "{0} Required")]
+        [EmailAddress(ErrorMessage ="Enter a valid email")]
         [DataType(DataType.EmailAddress)]               /*transforma num link de email*/
         public String Email { get; set; }
-        
+
+        [Required(ErrorMessage = "{0} Required")]
         [Display(Name ="Birth Data")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString ="{0:dd/MM/yyyy}")]
         public DateTime BirthDate { get; set; }
 
+        [Required(ErrorMessage = "{0} Required")]
+        //[Range(100.0,50000.0, ErrorMessage ="Base Salary between 100.0 an 50000.0")]
+        [Range(100.0, 50000.0, ErrorMessage = "{0} between {1} an {2}")]
         [Display(Name = "Base Salary")]
         [DisplayFormat(DataFormatString ="{0:F2}")]     /*formata as casa decimais*/
         public double  BaseSalary { get; set; }
